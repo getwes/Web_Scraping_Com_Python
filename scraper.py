@@ -12,3 +12,7 @@ headers = {'User-Agente': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit
 
 #pendindo requerimento aos dados do site
 site = requests.get(url, headers=headers)
+
+soup = BeautifulSoup(site.content, 'html.parser')#basicamente vou estar analizando o conteudo do site
+placas = soup.find_all('div' , class_='MuiCardContent-root jss62' )
+ultima_pagina= soup.find('button', class_='MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-root')
