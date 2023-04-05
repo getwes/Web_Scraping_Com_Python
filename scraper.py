@@ -16,3 +16,7 @@ site = requests.get(url, headers=headers)
 soup = BeautifulSoup(site.content, 'html.parser')#basicamente vou estar analizando o conteudo do site
 placas = soup.find_all('div' , class_='MuiCardContent-root jss62' )
 ultima_pagina= soup.find('button', class_='MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-root')
+
+marca = placas.find('a', class_='MuiTypography-root jss76 jss77 MuiTypography-h6')
+
+print(marca)
