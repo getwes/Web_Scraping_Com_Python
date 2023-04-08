@@ -15,7 +15,7 @@ site = requests.get(url, headers=headers)
 
 soup = BeautifulSoup(site.content, 'html.parser')#basicamente vou estar analizando o conteudo do site
 #placas = soup.find_all('div' , class_='MuiCardContent-root jss62' ) # div onde passa os dados, nome,preço,parcela
-ultima_pagina= soup.find('button', class_='MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-root')
+ultima_pagina= soup.find('button', class_='MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-page MuiPaginationItem-textPrimary MuiPaginationItem-sizeLarge').get_text().strip()
 
 for i in range(1,int(ultima_pagina)):
     url_pag = f'https://www.pichau.com.br/hardware/placa-de-video?page={i}2'
@@ -26,15 +26,24 @@ for i in range(1,int(ultima_pagina)):
     with open ('precos_placas.csv', 'a', newline='',encoding='UTF-8') as f:
         for placa in placas:
             marca = placa.find('h2', class_='MuiTypography-root jss76 jss77 MuiTypography-h6').get_text().strip()
+            
+            try:
+                preco = placa.find('div', class_='jss87').get_text().strip()
+                num_preco = preco[2:] 
+                num_preco = num_preco[:-3] 
+            except:
 
-placa = placas[0] # existe varias placas, estou pedindo apenas uma para ser analizada
+                num_preco = '0'
+            
+            try:
+                preco_avista = placa.find('div', class_='jss79').get_text().strip()
+                index = preco_avista.rfind('.') #pedindo os dados antes do index (,)
+                num_preco_avista = preco_avista[2:index]
+            except:
+                num_preco_avista = '0'
+            
+            linha = marca + ';' + num_preco + ';' + num_preco_avista + '\n'
 
-#filtrando os valores importante
-
-num_preco = preco[2:] #para tirar o R$ estou pedindo o valor depois do indice dois
-num_preco = num_preco[:-3] # para tirar os centavos
-
-preco_avista = placa.find('div', class_='jss79').get_text().strip()
-index = preco_avista.rfind('.') #pedindo os dados antes do index (,)
-num_preco_avista = preco_avista[2:index]
-print(num_preco_avista)
+            print(linha)
+            f.write(linha)
+    print(url_pag)
